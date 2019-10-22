@@ -113,6 +113,7 @@ set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_use
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "target_language" -value "VHDL" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "2" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -132,7 +133,7 @@ set files [list \
  [file normalize "${origin_dir}/src/design/MSCounter.vhd"] \
  [file normalize "${origin_dir}/src/design/SignalExtender.vhd"] \
  [file normalize "${origin_dir}/src/design/Timer.vhd"] \
- [file normalize "${origin_dir}/src/design/Test.vhd"] \
+ [file normalize "${origin_dir}/src/design/Top.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -187,7 +188,7 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
-set file "$origin_dir/src/design/Test.vhd"
+set file "$origin_dir/src/design/Top.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
@@ -198,7 +199,8 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "Test" -objects $obj
+set_property -name "top" -value "Top" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -208,7 +210,13 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 # Set 'constrs_1' fileset object
 set obj [get_filesets constrs_1]
 
-# Empty (no sources present)
+# Add/Import constrs file and set constrs file properties
+set file "[file normalize "$origin_dir/src/constraints/Basys3.xdc"]"
+set file_added [add_files -norecurse -fileset $obj [list $file]]
+set file "$origin_dir/src/constraints/Basys3.xdc"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
+set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
@@ -223,11 +231,17 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 set obj [get_filesets sim_1]
 set files [list \
  [file normalize "${origin_dir}/src/testbench/TestBench.vhd"] \
+ [file normalize "${origin_dir}/src/testbench/TestCounter.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sim_1' fileset file properties for remote files
 set file "$origin_dir/src/testbench/TestBench.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "$origin_dir/src/testbench/TestCounter.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj

@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 04/25/2019 09:37:11 AM
 -- Design Name: 
--- Module Name: Test - Dataflow
+-- Module Name: Top - Dataflow
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,15 +31,15 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Test is
+entity Top is
     Port ( clock, reset, m, s, start_stop : in STD_LOGIC;
            alarm_length : in STD_LOGIC_VECTOR (3 downto 0);
            cathodes : out  STD_LOGIC_VECTOR (6 downto 0);
            anodes : out  STD_LOGIC_VECTOR (3 downto 0);
            dp, alarm : out  STD_LOGIC);
-end Test;
+end Top;
 
-architecture Structural of Test is
+architecture Structural of Top is
     
     component FrequencyDivider is
         Generic( MAX_COUNT : NATURAL := 10);
